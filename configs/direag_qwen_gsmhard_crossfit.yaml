@@ -1,0 +1,41 @@
+experiment_name: dirichlet_qwen_gsmhard
+project_root: "."
+
+paths:
+  data_dir: "data"
+  standardized_data_dir: "data/standardized"
+  output_dir: "outputs"
+  steered_output_dir: "outputs/steered_outputs"
+  table_dir: "outputs/tables"
+  doc_dir: "docs"
+
+datasets:
+  - name: "gsmhard"
+    hf_name: "reasoning-machines/gsm-hard"
+    hf_config: null
+    split: "train"
+    sample_size: null
+    sample_seed: 20260517
+
+generation:
+  model_name_or_path: "/root/autodl-tmp/qwen2.5-7b-instruct"
+  model_tag: "qwen2p5_7b_instruct"
+  torch_dtype: "bfloat16"
+  device_map: "auto"
+  trust_remote_code: true
+  use_cot: true
+  temperature: 0.7
+  top_p: 1.0
+  max_new_tokens: 1024
+  problem_batch_size: 2
+  prompt_batch_size: 10
+  parse_retries: 2
+  runtime_limit_per_dataset: null
+
+analysis:
+  folds: 5
+  seed: 20260517
+  ece_bins: 10
+  l2_penalty: 0.001
+  optimization_maxiter: 500
+  null_target_weight: balanced

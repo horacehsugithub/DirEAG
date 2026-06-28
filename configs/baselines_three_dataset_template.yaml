@@ -1,0 +1,72 @@
+experiment_name: topk_sample_consistency_semantic_entropy_20260522
+project_root: "."
+
+paths:
+  data_dir: "data"
+  standardized_data_dir: "data/standardized"
+  output_dir: "outputs"
+  generation_dir: "outputs/generations"
+  table_dir: "outputs/tables"
+  doc_dir: "docs"
+
+models:
+  - model_tag: "qwen2p5_7b_instruct"
+    model_name_or_path: "${QWEN_MODEL_PATH:-/root/autodl-tmp/qwen2.5-7b-instruct}"
+    torch_dtype: "bfloat16"
+    device_map: "auto"
+    trust_remote_code: true
+
+  - model_tag: "mistral_7b_instruct"
+    model_name_or_path: "${MISTRAL_MODEL_PATH:-/root/autodl-tmp/Mistral-7B-Instruct-v0.3}"
+    torch_dtype: "bfloat16"
+    device_map: "auto"
+    trust_remote_code: false
+
+  - model_tag: "gemma2_9b_it"
+    model_name_or_path: "${GEMMA_MODEL_PATH:-/root/autodl-tmp/gemma-2-9b-it}"
+    torch_dtype: "bfloat16"
+    device_map: "auto"
+    trust_remote_code: true
+
+datasets:
+  - name: "gsm8k"
+    hf_name: "openai/gsm8k"
+    hf_config: "main"
+    calibration_split: "train"
+    split: "test"
+    evaluation_split: "test"
+    calibration_sample_size: null
+    evaluation_sample_size: null
+    sample_seed: 20260522
+
+  - name: "svamp"
+    hf_name: "MU-NLPC/Calc-svamp"
+    hf_config: null
+    split: "test"
+    sample_size: null
+    sample_seed: 20260522
+
+  - name: "gsmhard"
+    hf_name: "reasoning-machines/gsm-hard"
+    hf_config: null
+    split: "train"
+    sample_size: null
+    sample_seed: 20260522
+
+generation:
+  temperature: 0.7
+  top_p: 1.0
+  max_new_tokens: 1024
+  sample_k: 5
+  topk_k: 5
+  problem_batch_size: 2
+  prompt_batch_size: 10
+  parse_retries: 1
+  runtime_limit_per_dataset: null
+  run_sample_baselines: true
+  run_topk_baseline: true
+
+analysis:
+  folds: 5
+  seed: 20260522
+  ece_bins: 10

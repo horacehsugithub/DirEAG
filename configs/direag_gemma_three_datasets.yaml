@@ -1,0 +1,65 @@
+experiment_name: dirichlet_gemma_three_datasets
+project_root: "."
+
+paths:
+  data_dir: "data"
+  standardized_data_dir: "data/standardized"
+  output_dir: "outputs"
+  steered_output_dir: "outputs/steered_outputs"
+  table_dir: "outputs/tables"
+  doc_dir: "docs"
+
+datasets:
+  - name: "gsm8k"
+    hf_name: "openai/gsm8k"
+    hf_config: "main"
+    calibration_split: "train"
+    split: "test"
+    evaluation_split: "test"
+    calibration_sample_size: null
+    evaluation_sample_size: null
+    sample_seed: 20260526
+
+  - name: "svamp"
+    hf_name: "MU-NLPC/Calc-svamp"
+    hf_config: null
+    split: "test"
+    sample_size: null
+    sample_seed: 20260526
+
+  - name: "gsmhard"
+    hf_name: "reasoning-machines/gsm-hard"
+    hf_config: null
+    split: "train"
+    sample_size: null
+    sample_seed: 20260526
+
+generation:
+  model_name_or_path: "${GEMMA_MODEL_PATH:-/root/autodl-tmp/gemma-2-9b-it}"
+  model_tag: "gemma_2_9b_it"
+  torch_dtype: "bfloat16"
+  device_map: "auto"
+  trust_remote_code: false
+  use_cot: true
+  temperature: 0.7
+  top_p: 1.0
+  max_new_tokens: 1024
+  problem_batch_size: 8
+  prompt_batch_size: 40
+  parse_retries: 2
+  runtime_limit_per_dataset: null
+
+  attn_implementation: null
+  revision: null
+  token_env: "HF_TOKEN"
+  load_in_4bit: false
+  bnb_4bit_quant_type: "nf4"
+  bnb_4bit_use_double_quant: true
+
+analysis:
+  folds: 5
+  seed: 20260526
+  ece_bins: 10
+  l2_penalty: 0.001
+  optimization_maxiter: 500
+  null_target_weight: "balanced"
